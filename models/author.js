@@ -16,17 +16,16 @@ AuthorSchema.virtual("name").get(function() {
   // We want to make sure we handle the exception by returning an empty string for that case
   var fullName = "";
   if (this.first_name && this.family_name) {
-    fullname = this.family_name + ", " + this.family_name;
+    fullname = this.first_name + " " + this.family_name;
   }
   if (!this.first_name || !this.family_name) {
-    fullName = "";
+    fullname = "";
   }
 
-  return fullName;
+  return fullname;
 });
 
 // Virtual for author's lifespan
-
 AuthorSchema.virtual("lifespan").get(function() {
   return (
     this.date_of_death.getYear() - this.date_of_birth.getYear()
