@@ -5,6 +5,7 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
 var compression = require("compression");
+var helmet = require("helmet");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
@@ -12,6 +13,7 @@ var catalogRouter = require("./routes/catalog");
 
 var app = express();
 
+app.use(helmet());
 app.use(compression());
 
 // view engine setup
