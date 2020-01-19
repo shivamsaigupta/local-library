@@ -10,7 +10,14 @@ block content
         - book_list.sort(function(a, b) {let textA = a.title.toUpperCase(); let textB = b.title.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;});
         for book in book_list
           if bookinstance
-            option(value=book._id selected=(bookinstance.book.toString()==book._id.toString() ? 'selected' : false)) #{book.title}
+            //- Handle GET form, where book.author is an object, and POST form, where it is a string.
+            option(
+              value=book._id
+              selected=(
+                book._id.toString()==bookinstance.book._id
+                || book._id.toString()==bookinstance.book
+              ) ? 'selected' : false
+            ) #{book.title}
           else
             option(value=book._id) #{book.title}
         
@@ -24,10 +31,36 @@ block content
     div.form-group
       label(for='status') Status:
       select#status.form-control(type='select' placeholder='Select status' name='status' required='true')
-        option(value='Maintenance') Maintenance
-        option(value='Available') Available
-        option(value='Loaned') Loaned
-        option(value='Reserved') Reserved
+        if bookinstance
+          option(
+            value='Maintenance'
+            selected=(
+              bookinstance.status=='Maintenance'? 'selected' : false
+            )
+          ) Maintenance
+          option(
+            value='Available'
+            selected=(
+              bookinstance.status=='Available'? 'selected' : false
+            )
+          ) Available
+          option(
+            value='Loaned'
+            selected=(
+              bookinstance.status=='Loaned'? 'selected' : false
+            )
+          ) Loaned
+          option(
+            value='Reserved'
+            selected=(
+              bookinstance.status=='Reserved'? 'selected' : false
+            )
+          ) Reserved
+        else
+          option(value='Maintenance') Maintenance
+          option(value='Available') Available
+          option(value='Loaned') Loaned
+          option(value='Reserved') Reserved
 
     button.btn.btn-primary(type='submit') Submit
 
