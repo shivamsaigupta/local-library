@@ -29,14 +29,23 @@ AuthorSchema.virtual("name").get(function() {
 // Virtual for author's lifespan
 AuthorSchema.virtual("lifespan").get(function() {
   return (
-    moment(this.date_of_death).format("YYYY") +
+    moment(this.date_of_birth).format("YYYY") +
     " - " +
-    moment(this.date_of_birth).format("YYYY")
+    moment(this.date_of_death).format("YYYY")
   );
 });
 
-// Virtual for author's URL
+// Virtual for author's birth date formatted for forms
+AuthorSchema.virtual("dob_form").get(function() {
+  return moment(this.date_of_birth).format("YYYY-MM-DD");
+});
 
+// Virtual for author's death date formatted for forms
+AuthorSchema.virtual("dod_form").get(function() {
+  return moment(this.date_of_death).format("YYYY-MM-DD");
+});
+
+// Virtual for author's URL
 AuthorSchema.virtual("url").get(function() {
   return "/catalog/author/" + this._id;
 });
