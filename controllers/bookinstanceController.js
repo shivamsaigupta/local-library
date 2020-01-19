@@ -181,6 +181,66 @@ exports.bookinstance_update_get = function(req, res, next) {
 };
 
 // Handle bookinstance update on POST.
-exports.bookinstance_update_post = function(req, res) {
-  res.send("NOT IMPLEMENTED: BookInstance update POST");
-};
+exports.bookinstance_update_post = [
+  // Validate fields.
+  body("book", "Book must be specified")
+    .isLength({ min: 1 })
+    .trim(),
+  body("imprint", "Imprint must be specified")
+    .isLength({ min: 1 })
+    .trim(),
+  body("due_back", "Invalid date")
+    .optional({ checkFalsy: true })
+    .isISO8601(),
+
+  //Sanitize fields
+
+  sanitizeBody("book").escape(),
+  sanitizeBody("imprint").escape(),
+  sanitizeBody("due_back").toDate(),
+  sanitizeBody("status")
+    .trim()
+    .escape(),
+
+  // Process request after validation and sanitization
+  (req, res, next) => {
+    // Extract validation errors
+    var errors = validationResult(req);
+
+    // Create new book instance with old id
+    var bookinstance = new BookInstance({
+      _id: req.params.id,
+      status: req.body.status,
+      imprint: req.body.imprint,
+      book: req.body.book,
+      due_back: req.body.due_back
+    });
+
+    if (!errors.isEmpty()) {
+      // There are errors, re-render with validated and sanitized values
+      Book.find({}, function(err, books) {
+        if (err) {
+          return next(err);
+        }
+        res.render("bookinstance_form", {
+          bookinstance: bookinstance,
+          book_list: books,
+          selected_book: bookinstance.book._id,
+          errors: errors.array()
+        });
+      });
+      return;
+    }
+
+    // success, proceed to update
+    BookInstance.findByIdAndUpdate(req.params.id, bookinstance, {}, function(
+      err,
+      thebookinstance
+    ) {
+      if (err) {
+        return next(err);
+      }
+      res.redirect(thebookinstance.url);
+    });
+  }
+];
