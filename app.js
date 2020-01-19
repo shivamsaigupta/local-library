@@ -48,7 +48,7 @@ app.use(function(err, req, res, next) {
 
 // Set up mongoose connection
 let dev_db_url =
-  "mongodb+srv://dbUser:dbPassword@cluster0-chztm.mongodb.net/local_library?retryWrites=true&w=majority";
+  "mongodb+srv://<myUserName>:<myPassword>@cluster0-chztm.mongodb.net/local_library?retryWrites=true&w=majority";
 let mongoDB = process.env.MONGODB_URI || dev_db_url;
 
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
